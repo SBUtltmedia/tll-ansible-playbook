@@ -1,0 +1,15 @@
+---
+- name: TLT media lab machine setup
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: /etc/hosts
+        dest: /etc/hosts
+        mode: '0777'
+
+    - name: Run a script with arguments 
+      ansible.builtin.script: ./test.command
+    
