@@ -1,5 +1,5 @@
 ## How to setup new computer
-. Prepare the host file:
+1. Prepare the host file:
 
 Delete the existing scripts/hosts file.
 Run scripts/sshkey.command to gather SSH fingerprints for all machines.
