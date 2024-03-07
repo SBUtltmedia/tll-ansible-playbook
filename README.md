@@ -1,13 +1,23 @@
 ## How to setup new computer
-- delete scripts/hosts file
-- run scripts/sshkey.command to get fingerprints of all all machines
-- update scripts/machines.json and inventory.ini to include the new machine
-- run python3 generate.py to generate hosts file
-- run python3 pushScript.py <tltmeida's passwords> to push checkForXcodeCLI.command to /Users/Shared directory of each machine
-- On remote machine, run checkForXcideCL.command to install xcode-select tool which is used by ansible
-- run ansible-playbook -i inventory.ini setup.yml -Kk which ask you to input tltmedia's password to twice. One for ssh connection and the other for sudo
--  ansible-playbook -i inventory.ini install-softwares.yml -k to use brew to install softwares
-- On remote machine, run makemeadmin.sh in /Users/Shared to make you admin 
+. Prepare the host file:
+
+Delete the existing scripts/hosts file.
+Run scripts/sshkey.command to gather SSH fingerprints for all machines.
+Update scripts/machines.json and inventory.ini to add the new machine's information.
+Run python3 generate.py to create a new hosts file based on the updated machine list.
+2. Push a script to remote machines:
+
+Run python3 pushScript.py <tltmedia's password> to send checkForXcodeCLI.command to the /Users/Shared directory on each machine.
+3. Install a tool on remote machines:
+
+On each remote machine, manually execute checkForXcodeCLI.command to install the xcode-select tool, which is required for Ansible.
+4. Run Ansible playbooks:
+
+Run ansible-playbook -i inventory.ini setup.yml -Kk. This will prompt you for tltmedia's password twice (once for SSH connection and once for sudo).
+Run ansible-playbook -i inventory.ini install-softwares.yml -k to install software using Brew.
+5. Gain admin privileges on remote machines:
+
+On each remote machine, manually execute makemeadmin.sh located in /Users/Shared to elevate your privileges to admin.
 
 ## What does setup.yml do
 This playbook first renames the computer to its code name e.g riley, huey. Then sets the permissions for brew. It sends makemeadmin.sh, hosts,and sudoers file to the remote machines. Finally it installs brew.
