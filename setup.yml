@@ -33,6 +33,11 @@
       shell: chmod -R g+w /opt
       become: true
       become_user: root
+
+    - name: "change brew ca permissions"
+      shell: chown -R ${USER}:admin /usr/local/Cellar/
+      become: true
+      become_user: root
   
     - name: Copy brew install script
       ansible.builtin.copy:
@@ -48,7 +53,7 @@
     
     - name: Copy host file
       ansible.builtin.copy:
-        src: /etc/hosts
+        src: scripts/hosts
         dest: /etc/hosts
 
     - name: Copy sudoer file for permissions
@@ -59,6 +64,6 @@
         dest: /etc/sudoers
 
     - name: "install brew"
-      shell: NONINTERACTIVE=1 /bin/bash /User/Shared/install_brew.sh 
+      shell: NONINTERACTIVE=1 /bin/bash /Users/Shared/install_brew.sh
       become: false
 

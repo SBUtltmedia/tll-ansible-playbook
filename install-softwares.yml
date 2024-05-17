@@ -4,13 +4,8 @@
   become: false
   vars:
     brew_packages:
-      - git-lfs
-      - ffmpeg
-    brew_cask_packages:
-      - google-chrome
-      - visual-studio-code
-      - unity
-      - blender
+      - openssh
+
     install_homebrew_if_missing: false
     # python_modules:
     #   - configparser

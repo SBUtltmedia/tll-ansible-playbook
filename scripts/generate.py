@@ -1,13 +1,12 @@
 import json
 
-
 hosts="""
 127.0.0.1	localhost
 255.255.255.255	broadcasthost
 ::1             localhost
 """
 
-with open('machines.json') as json_data:
+with open('scripts/machines.json') as json_data:
     d = json.load(json_data)
     json_data.close()
 

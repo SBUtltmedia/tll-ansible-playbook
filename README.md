@@ -1,11 +1,11 @@
 ## How to setup new computer
 1. Prepare the host file:
-    Delete the existing scripts/hosts file.
+    Delete the existing scripts/hosts file. Run python3 scripts/generate.py to generate new hosts file
     Update scripts/machines.json and inventory.ini to add the new machine's information.
     Run scripts/sshkey.command to gather SSH fingerprints for all machines.
    
 2. Push a script to remote machines:
-    Run python3 pushScript.py <tltmedia's password> to send checkForXcodeCLI.command to the /Users/Shared directory on each machine.
+    Run python3 scripts/pushScript.py <tltmedia's password> to send checkForXcodeCLI.command to the /Users/Shared directory on each machine.
 
 3. Install a tool on remote machines:
     On each remote machine, manually execute checkForXcodeCLI.command to install the xcode-select tool, which is required for Ansible.
@@ -15,6 +15,9 @@
 
 5. Gain admin privileges on remote machines:
     On each remote machine, manually execute makemeadmin.sh located in /Users/Shared to elevate the current user's privileges to admin.
+
+6. Install packages and apps on the new machine through brew
+   Run ansible-playbook -i inventory.ini install-softwares.yml -k
 
 ## What does setup.yml do
 This playbook first renames the computer to its code name e.g riley, huey. Then sets the permissions for brew. It sends makemeadmin.sh, hosts,and sudoers file to the remote machines. Finally it installs brew. 
