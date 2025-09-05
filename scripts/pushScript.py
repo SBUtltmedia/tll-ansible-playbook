@@ -21,7 +21,7 @@ for machine in d:
             ip = machine['ip']
             print(host)
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh_client.connect(hostname=str(host),port=port,username=username,password=password, timeout=1)
+            ssh_client.connect(hostname=ip,port=port,username=username,password=password, timeout=1)
             ftp = ssh_client.open_sftp()
             ftp.put("scripts/checkForXcodeCLI.command","/Users/Shared/checkForXcodeCLI.command")
             print(f'Moved file to {host}')
