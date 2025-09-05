@@ -1,6 +1,6 @@
 import json
 
-hosts="""
+hosts = """
 127.0.0.1	localhost
 255.255.255.255	broadcasthost
 ::1             localhost
@@ -14,5 +14,5 @@ for machine in d:
     host = machine["machineName"] 
     hosts+=f'{machine["ip"]}\t{host}\n'
 
-with open("hosts", "a") as f:
+with open("scripts/hosts", "a+") as f:
      f.write(hosts)
