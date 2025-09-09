@@ -33,3 +33,6 @@ def push_and_run():
                 run_command_over_ssh(ip, "tltmedia", "key.pem", "./Users/Shared/checkForXcodeCLI.command")
         except Exception as e:
             logging.error(f"Could not copy over {host}: {e}")
+            return False
+
+    return True

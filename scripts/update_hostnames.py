@@ -17,7 +17,10 @@ def update_hostnames():
                 if machine["ip"] == ip:
                     machine["machineName"] = res[ip]["stdout"]
         else:
-            logging.info(f"Could not get hostname for ip: {ip}")
+            logging.error(f"Could not get hostname for ip: {ip}")
+            return False
+    
+    return True
 
 def update_inventory_ini():
     try:
@@ -43,9 +46,14 @@ def update_inventory_ini():
         with open(INI_FILE_PATH, 'w') as configfile:
             config.write(configfile)
         logging.info(f"Successfully updated '[localhost]' section in '{INI_FILE_PATH}' with the new hostnames.")
+        return True
     except Exception as e:
         logging.error(f"An error occurred while writing to the file: {e}")
+        return False
 
 
 def become_admin():
-    run_command_on_all_machines("tltmedia", "key.pem", "./Users/Shared/makeadmin.command")
+    try:
+        run_command_on_all_machines("tltmedia", "key.pem", "./Users/Shared/makeadmin.command")
+    except Exception as e:
+        logging.error(f"Error becoming admin: {e}")

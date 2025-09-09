@@ -75,18 +75,15 @@ def main_pipeline():
     # Step 1: Run update_hostnames()
     logging.info("Step 1: Running update_hostnames()")
     # In a real scenario, this function would return the list of hosts to be used
-    try:
-        new_hosts = update_hostnames()
-        logging.info(f"New hostnames received: {new_hosts}")
-    except Exception as e:
-        logging.error(f"Step 1 failed: {e}")
+    res = update_hostnames()
+
+    if not res:
+        logging.error("Cound not get all hosts")
         sys.exit(1)
 
     # Step 2: Update inventory.ini file
     logging.info("Step 2: Updating inventory.ini file with new hostnames")
-    try:
-        update_inventory_ini('inventory.ini', new_hosts)
-    except Exception as e:
+    if not update_inventory_ini():
         logging.error(f"Step 2 failed: {e}")
         sys.exit(1)
 
@@ -100,10 +97,8 @@ def main_pipeline():
     
     # Step 4: Run push_and_run.py to push and run the command
     logging.info("Step 4: Running push_and_run.py to push and run the command on machines")
-    try:
-        push_and_run()
-    except Exception as e:
-        logging.error(f"Step 4 failed: {e}")
+    if not push_and_run():
+        logging.error(f"Step 4 failed")
         sys.exit(1)
 
     # Step 5: Run ansible-playbook -i inventory.ini setup.yml -Kk
@@ -112,7 +107,9 @@ def main_pipeline():
     
     # Step 7: Get admin privs on all remote machines
     logging.info("Gaining admin privs on all remote machines")
-    become_admin()
+    if not become_admin():
+        logging.error(f"Step 7 failed")
+        sys.exit(1)        
 
     # Step 7: Run ansible-playbook -i inventory.ini install-softwares.yml -k
     logging.info("Step 6: Running Ansible playbook 'install-softwares.yml'")
