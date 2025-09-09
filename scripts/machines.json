@@ -1,16 +1,58 @@
 [
-{"ip":"129.49.17.183","machineName":"frankie-tll"},
-{"ip":"129.49.17.173","machineName":"widow-tll"},
-{"ip":"129.49.17.179","machineName":"riley-tll"},
-{"ip":"129.49.17.178","machineName":"huey-tll"},
-{"ip":"129.49.17.187","machineName":"wilt-tll"},
-{"ip":"129.49.17.180","machineName":"ollama-tll"},
-{"ip":"129.49.17.181","machineName":"bunsen-tll"},
-{"ip":"129.49.17.182","machineName":"Coco-tll"},
-{"ip":"129.49.17.188","machineName":"marvin-tll"},
-{"ip":"129.49.17.189","machineName":"beaker-tll"},
-{"ip":"129.49.17.185","machineName":"phong-tll"},
-{"ip":"129.49.17.180","machineName":"snoopy-tll"},
-{"ip": "129.49.17.185", "machineName": "dee-tll"},
-{"ip": "129.49.17.185", "machineName": "dum-tll"}
+    {
+        "ip": "129.49.17.183",
+        "machineName": "frankie-tll"
+    },
+    {
+        "ip": "129.49.17.173",
+        "machineName": "widow-tll"
+    },
+    {
+        "ip": "129.49.17.179",
+        "machineName": "riley-tll"
+    },
+    {
+        "ip": "129.49.17.178",
+        "machineName": "huey-tll"
+    },
+    {
+        "ip": "129.49.17.187",
+        "machineName": "wilt-tll"
+    },
+    {
+        "ip": "129.49.17.180",
+        "machineName": "ollama-tll"
+    },
+    {
+        "ip": "129.49.17.181",
+        "machineName": "bunsen-tll"
+    },
+    {
+        "ip": "129.49.17.182",
+        "machineName": "Coco-tll"
+    },
+    {
+        "ip": "129.49.17.188",
+        "machineName": "marvin-tll"
+    },
+    {
+        "ip": "129.49.17.189",
+        "machineName": "beaker-tll"
+    },
+    {
+        "ip": "129.49.17.185",
+        "machineName": "phong-tll"
+    },
+    {
+        "ip": "129.49.17.180",
+        "machineName": "snoopy-tll"
+    },
+    {
+        "ip": "129.49.17.185",
+        "machineName": "dee-tll"
+    },
+    {
+        "ip": "129.49.17.189",
+        "machineName": "dum-tll"
+    }
 ]

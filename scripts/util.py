@@ -1,10 +1,6 @@
 import paramiko
-import json
-import sys
-import os
 import logging
-
-os.path.dirname(os.path.abspath(__file__))
+import json
 
 def run_command_over_ssh(hostname, username, key_file, command):
     """
@@ -66,29 +62,20 @@ def run_command_over_ssh(hostname, username, key_file, command):
         if 'ssh_client' in locals() and ssh_client:
             ssh_client.close()
         logging.info(f"Connection to {hostname} closed.\n")
+    
+    return {"stdout": stdout_output, "stderr": stderr_output, "error": ""}
 
+def run_command_on_all_machines(username, key_file, command):
+    res = {}
+    with open('scripts/machines.json') as json_data:
+        d = json.load(json_data)
+        json_data.close()
 
-username = "tltmedia"
-password = sys.argv[1]
-TURNOFFSFTP = False
-port = 22
-with open('scripts/machines.json') as json_data:
-    d = json.load(json_data)
-    json_data.close()
-
-ssh_client = paramiko.SSHClient()
-for machine in d:
-    try:
-        if not TURNOFFSFTP:
-            host = machine['machineName']
+    for machine in d:
+        try:
             ip = machine['ip']
-            print(host)
-            ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh_client.connect(hostname=ip,port=port,username=username,password=password, timeout=1)
-            ftp = ssh_client.open_sftp()
-            ftp.put("scripts/checkForXcodeCLI.command","/Users/Shared/checkForXcodeCLI.command")
-            print(f'Moved file to {host}')
-            print("Runing command")
-            run_command_over_ssh(ip, "tltmedia", "key.pem", "./Users/Shared/checkForXcodeCLI.command")
-    except Exception as e:
-        print(f"Could not copy over {host}: {e}")
+            cur_res = run_command_over_ssh(ip, username, key_file, command)
+            res[ip] = cur_res
+        except Exception as e:
+            print(f"Error running command on host: {ip} - {e}")
+            res[ip] = {"stdout": "", "error": e}
