@@ -10,5 +10,7 @@
 {"ip":"129.49.17.188","machineName":"marvin-tll"},
 {"ip":"129.49.17.189","machineName":"beaker-tll"},
 {"ip":"129.49.17.185","machineName":"phong-tll"},
-{"ip":"129.49.17.180","machineName":"snoopy-tll"}
+{"ip":"129.49.17.180","machineName":"snoopy-tll"},
+{"ip": "129.49.17.185", "machineName": "dee-tll"},
+{"ip": "129.49.17.185", "machineName": "dum-tll"}
 ]
