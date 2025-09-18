@@ -1,0 +1,101 @@
+--- Starting Pipeline ---
+Step 1: Running update_hostnames()
+Attempting to connect to 129.49.17.183 using key file...
+Connected (version 2.0, client OpenSSH_9.0)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.183.
+Executing command: 'hostname' on 129.49.17.183...
+--- Standard Output for 129.49.17.183 ---
+frankie-tll
+--- End Standard Output ---
+Command execution on 129.49.17.183 completed.
+Connection to 129.49.17.183 closed.
+
+Attempting to connect to 129.49.17.173 using key file...
+Connected (version 2.0, client OpenSSH_9.9)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.173.
+Executing command: 'hostname' on 129.49.17.173...
+--- Standard Output for 129.49.17.173 ---
+widow-tll
+--- End Standard Output ---
+Command execution on 129.49.17.173 completed.
+Connection to 129.49.17.173 closed.
+
+Attempting to connect to 129.49.97.221 using key file...
+Could not connect to or execute command on 129.49.97.221. Error: [Errno 51] Network is unreachable
+Connection to 129.49.97.221 closed.
+
+Attempting to connect to 129.49.17.178 using key file...
+Connected (version 2.0, client OpenSSH_9.6)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.178.
+Executing command: 'hostname' on 129.49.17.178...
+--- Standard Output for 129.49.17.178 ---
+huey-tll
+--- End Standard Output ---
+Command execution on 129.49.17.178 completed.
+Connection to 129.49.17.178 closed.
+
+Attempting to connect to 129.49.17.187 using key file...
+Connected (version 2.0, client OpenSSH_9.0)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.187.
+Executing command: 'hostname' on 129.49.17.187...
+--- Standard Output for 129.49.17.187 ---
+wilt-tll
+--- End Standard Output ---
+Command execution on 129.49.17.187 completed.
+Connection to 129.49.17.187 closed.
+
+Attempting to connect to 129.49.17.180 using key file...
+Connected (version 2.0, client OpenSSH_9.9)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.180.
+Executing command: 'hostname' on 129.49.17.180...
+--- Standard Output for 129.49.17.180 ---
+tlt-17-180.labs.stonybrook.edu
+--- End Standard Output ---
+Command execution on 129.49.17.180 completed.
+Connection to 129.49.17.180 closed.
+
+Attempting to connect to 129.49.17.181 using key file...
+Connected (version 2.0, client OpenSSH_9.7)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.181.
+Executing command: 'hostname' on 129.49.17.181...
+--- Standard Output for 129.49.17.181 ---
+bunsen-tll
+--- End Standard Output ---
+Command execution on 129.49.17.181 completed.
+Connection to 129.49.17.181 closed.
+
+Attempting to connect to 129.49.17.182 using key file...
+Connected (version 2.0, client OpenSSH_9.0)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.182.
+Executing command: 'hostname' on 129.49.17.182...
+--- Standard Output for 129.49.17.182 ---
+Coco-tll
+--- End Standard Output ---
+Command execution on 129.49.17.182 completed.
+Connection to 129.49.17.182 closed.
+
+Attempting to connect to 129.49.17.185 using key file...
+Connected (version 2.0, client OpenSSH_9.9)
+Authentication (publickey) successful!
+Successfully connected to 129.49.17.185.
+Executing command: 'hostname' on 129.49.17.185...
+--- Standard Output for 129.49.17.185 ---
+tlt-17-185.labs.stonybrook.edu
+--- End Standard Output ---
+Command execution on 129.49.17.185 completed.
+Connection to 129.49.17.185 closed.
+
+Attempting to connect to 129.49.17.189 using key file...
+Exception (client): Error reading SSH protocol banner
+SSH error on 129.49.17.189: No existing session
+Connection to 129.49.17.189 closed.
+
+Error - Key not found in update_hostnames()
+Cound not get all hosts

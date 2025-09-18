@@ -19,7 +19,19 @@ import logging
 # We will use this path to import our modules
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
 
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.INFO)
+
+file_handler = logging.FileHandler('app.log')
+file_handler.setLevel(logging.INFO)
+
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+root_logger.addHandler(file_handler)
+root_logger.addHandler(stream_handler)
 
 try:
     from update_hostnames import update_hostnames, update_inventory_ini, become_admin
