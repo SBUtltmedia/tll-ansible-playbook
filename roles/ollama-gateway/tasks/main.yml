@@ -1,0 +1,10 @@
+---
+# roles/ollama_gateway/tasks/main.yml
+- name: Install dependencies for Ollama Gateway
+  ansible.builtin.include_tasks: install_dependencies.yml
+
+- name: Configure Nginx as a reverse proxy
+  ansible.builtin.include_tasks: configure_nginx.yml
+
+- name: Ensure Ollama and Nginx services are running
+  ansible.builtin.include_tasks: ensure_services.yml

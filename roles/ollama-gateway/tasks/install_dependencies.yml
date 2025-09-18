@@ -1,0 +1,21 @@
+---
+# roles/ollama_gateway/tasks/install_dependencies.yml
+- name: Ensure Homebrew is installed
+  ansible.builtin.stat:
+    path: /opt/homebrew/bin/brew
+  register: homebrew_stat
+
+- name: Fail if Homebrew is not found
+  ansible.builtin.fail:
+    msg: "Homebrew not found at /opt/homebrew/bin/brew. Please install it first."
+  when: not homebrew_stat.stat.exists
+
+- name: Install Nginx using Homebrew
+  community.general.homebrew:
+    name: nginx
+    state: present
+
+- name: Install Ollama.app using Homebrew Cask
+  community.general.homebrew_cask:
+    name: ollama
+    state: present

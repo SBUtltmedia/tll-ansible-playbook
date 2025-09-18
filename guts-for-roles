@@ -1,0 +1,166 @@
+roles/ollama_gateway/templates/nginx_ollama_gateway.conf.j2
+
+# This file is managed by Ansible. Do not edit directly.
+
+# Define the remote dg-mem server as an "upstream" for easy reference
+upstream dg_mem_ollama {
+    server {{ remote_ollama_host }}:{{ remote_ollama_port }};
+}
+
+# Define the local Mac Studio server as an "upstream"
+upstream local_ollama {
+    server 127.0.0.1:{{ local_ollama_port }};
+}
+
+# Main server block that listens on the LAN
+server {
+    listen {{ gateway_listen_port }};
+    server_name ollama-tll;
+
+    # Route requests starting with /dg-mem/ to the remote server
+    location /dg-mem/ {
+        # This line removes the /dg-mem prefix before forwarding
+        rewrite ^/dg-mem/(.*)$ /$1 break;
+        
+        proxy_pass http://dg_mem_ollama;
+        
+        # Headers required for streaming and correct API operation
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffering off;
+        proxy_read_timeout 86400; # Set a long timeout for long-running models
+    }
+
+    # Route requests starting with /local/ to the local server
+    location /local/ {
+        rewrite ^/local/(.*)$ /$1 break;
+        
+        proxy_pass http://local_ollama;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffering off;
+        proxy_read_timeout 86400;
+    }
+}
+
+roles/ollama_gateway/tasks/main.yml
+
+---
+# roles/ollama_gateway/tasks/main.yml
+- name: Install dependencies for Ollama Gateway
+  ansible.builtin.include_tasks: install_dependencies.yml
+
+- name: Configure Nginx as a reverse proxy
+  ansible.builtin.include_tasks: configure_nginx.yml
+
+- name: Ensure Ollama and Nginx services are running
+  ansible.builtin.include_tasks: ensure_services.yml
+
+roles/ollama_gateway/tasks/install_dependencies.yml
+
+---
+# roles/ollama_gateway/tasks/install_dependencies.yml
+- name: Ensure Homebrew is installed
+  ansible.builtin.stat:
+    path: /opt/homebrew/bin/brew
+  register: homebrew_stat
+
+- name: Fail if Homebrew is not found
+  ansible.builtin.fail:
+    msg: "Homebrew not found at /opt/homebrew/bin/brew. Please install it first."
+  when: not homebrew_stat.stat.exists
+
+- name: Install Nginx using Homebrew
+  community.general.homebrew:
+    name: nginx
+    state: present
+
+- name: Install Ollama.app using Homebrew Cask
+  community.general.homebrew_cask:
+    name: ollama
+    state: present
+
+roles/ollama_gateway/tasks/configure_nginx.yml
+
+---
+# roles/ollama_gateway/tasks/configure_nginx.yml
+- name: Ensure Nginx 'servers' directory exists
+  ansible.builtin.file:
+    path: /opt/homebrew/etc/nginx/servers
+    state: directory
+    mode: '0755'
+
+- name: Deploy Ollama gateway Nginx configuration
+  ansible.builtin.template:
+    src: nginx_ollama_gateway.conf.j2
+    dest: /opt/homebrew/etc/nginx/servers/ollama_gateway.conf
+    mode: '0644'
+  notify: Restart Nginx
+
+- name: Ensure main nginx.conf includes the servers directory
+  ansible.builtin.lineinfile:
+    path: /opt/homebrew/etc/nginx/nginx.conf
+    line: "    include servers/*;"
+    insertafter: "include servers/default;"
+    state: present
+  notify: Restart Nginx
+
+roles/ollama_gateway/tasks/ensure_services.yml
+
+---
+# roles/ollama_gateway/tasks/ensure_services.yml
+- name: Configure local Ollama to listen on its custom port
+  ansible.builtin.command: launchctl setenv OLLAMA_HOST "127.0.0.1:{{ local_ollama_port }}"
+  changed_when: false # This command doesn't report change status
+
+- name: Check if Ollama application is running
+  ansible.builtin.command: pgrep -f "/Applications/Ollama.app"
+  register: ollama_process
+  changed_when: false
+  failed_when: false
+
+- name: Ensure local Ollama application is running
+  ansible.builtin.command: open -a Ollama
+  when: ollama_process.rc != 0
+
+- name: Ensure Nginx service is started and enabled on boot
+  community.general.homebrew:
+    name: nginx
+    state: started
+    service_enabled: true
+
+roles/ollama_gateway/handlers/main.yml
+
+---
+# roles/ollama_gateway/handlers/main.yml
+- name: Restart Nginx
+  community.general.homebrew:
+    name: nginx
+    state: restarted
+
+Step 3: Configure and Run the Playbook
+Update Your Inventory: Ensure your Ansible inventory file (e.g., hosts) has an entry for your Mac Studio that can be targeted locally.
+
+[gateways]
+ollama-tll ansible_connection=local
+
+Create a Playbook: Create a new file in the root of your repository, e.g., setup_gateway.yml.
+
+---
+- name: Configure Ollama Gateway on Mac Studio
+  hosts: gateways
+  gather_facts: yes
+
+  roles:
+    - ollama_gateway

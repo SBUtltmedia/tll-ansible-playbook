@@ -1,0 +1,6 @@
+---
+# roles/ollama_gateway/handlers/main.yml
+- name: Restart Nginx
+  community.general.homebrew:
+    name: nginx
+    state: restarted

@@ -1,0 +1,21 @@
+---
+# roles/ollama_gateway/defaults/main.yml
+
+# The main port Nginx will listen on for all incoming requests from the LAN.
+gateway_listen_port: 8080
+
+# --- Local Ollama Configuration (on the Mac Studio) ---
+# The port your local Ollama instance will be configured to run on.
+local_ollama_port: 11436
+
+# --- Remote Ollama Configuration (dg-mem server) ---
+# The hostname or IP address of the remote server.
+remote_ollama_host: "dg-mem.seawulf.stonybrook.edu"
+# The custom port your user-run Ollama server is using on dg-mem.
+remote_ollama_port: 11435
+
+# --- Remote Ollama Configuration (dg-work server) ---
+# The hostname or IP address of the remote server.
+remote_work_ollama_host: "dg-work.seawulf.stonybrook.edu"
+# The custom port your user-run Ollama server is using on dg-work.
+remote_work_ollama_port: 11435

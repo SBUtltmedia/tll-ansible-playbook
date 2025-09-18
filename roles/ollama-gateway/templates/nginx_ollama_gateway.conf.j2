@@ -1,0 +1,77 @@
+# This file is managed by Ansible. Do not edit directly.
+
+# Define the remote dg-mem server as an "upstream" for easy reference
+upstream dg_mem_ollama {
+    server {{ remote_ollama_host }}:{{ remote_ollama_port }};
+}
+
+# Define the local Mac Studio server as an "upstream"
+upstream local_ollama {
+    server 127.0.0.1:{{ local_ollama_port }};
+}
+
+# Define the remote dg-work server as an "upstream"
+upstream dg_work_ollama {
+    server {{ remote_work_ollama_host }}:{{ remote_work_ollama_port }};
+}
+
+# Main server block that listens on the LAN
+server {
+    listen {{ gateway_listen_port }};
+    server_name ollama-tll;
+
+    # Route requests starting with /dg-mem/ to the remote server
+    location /dg-mem/ {
+        # This line removes the /dg-mem prefix before forwarding
+        rewrite ^/dg-mem/(.*)$ /$1 break;
+        
+        proxy_pass http://dg_mem_ollama;
+        
+        # Headers required for streaming and correct API operation
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffering off;
+        proxy_read_timeout 86400; # Set a long timeout for long-running models
+    }
+
+    # Route requests starting with /local/ to the local server
+    location /local/ {
+        rewrite ^/local/(.*)$ /$1 break;
+        
+        proxy_pass http://local_ollama;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffering off;
+        proxy_read_timeout 86400;
+    }
+
+    # Route requests starting with /dg-work/ to the remote server
+    location /dg-work/ {
+        # This line removes the /dg-work prefix before forwarding
+        rewrite ^/dg-work/(.*)$ /$1 break;
+        
+        proxy_pass http://dg_work_ollama;
+        
+        # Headers required for streaming and correct API operation
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffering off;
+        proxy_read_timeout 86400; # Set a long timeout for long-running models
+    }
+}

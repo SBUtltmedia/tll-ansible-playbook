@@ -1,0 +1,22 @@
+---
+# roles/ollama_gateway/tasks/configure_nginx.yml
+- name: Ensure Nginx 'servers' directory exists
+  ansible.builtin.file:
+    path: /opt/homebrew/etc/nginx/servers
+    state: directory
+    mode: '0755'
+
+- name: Deploy Ollama gateway Nginx configuration
+  ansible.builtin.template:
+    src: nginx_ollama_gateway.conf.j2
+    dest: /opt/homebrew/etc/nginx/servers/ollama_gateway.conf
+    mode: '0644'
+  notify: Restart Nginx
+
+- name: Ensure main nginx.conf includes the servers directory
+  ansible.builtin.lineinfile:
+    path: /opt/homebrew/etc/nginx/nginx.conf
+    line: "    include servers/*;"
+    insertafter: "include servers/default;"
+    state: present
+  notify: Restart Nginx
