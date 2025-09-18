@@ -2,9 +2,10 @@
 1. Run update_hostnames() from scripts/update_hostnames.py
 2. Update inventory.ini file: Run update_inventory_ini() from from scripts/update_hostnames.py
 3. Run scipts/generate.py to generate the new hosts file
-4. Run scripts/push_and_run.py to push the command into machines and run it.
+4. Run scripts/push_and_run.py's push_files() to push the command into machines.
+5. Run scripts/push_and_run.py's run_checkforxcode_cli() to run the command checkForXcodeCLI.command
 5. Run ansible-playbook -i inventory.ini setup.yml -Kk
-6. Gain admin privilages by running makemeadmin.command in the remote hosts
+6. Run scripts/push_and_run.py's run_makemeadmin() to run the make the user(tltmedia) admin
 7. Run ansible-playbook -i inventory.ini install-softwares.yml -k
 """
 
@@ -18,10 +19,12 @@ import logging
 # We will use this path to import our modules
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
 
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+
 try:
     from update_hostnames import update_hostnames, update_inventory_ini, become_admin
     from generate import generate_hosts_file
-    from push_and_run import push_and_run
+    from push_and_run import push_files, run_checkforxcode_cli, run_makemeadmin
 except ImportError as e:
     logging.error(f"Error importing required modules. Please ensure all scripts are in the 'scripts' directory.")
     logging.error(f"ImportError: {e}")
@@ -96,23 +99,28 @@ def main_pipeline():
         sys.exit(1)
     
     # Step 4: Run push_and_run.py to push and run the command
-    logging.info("Step 4: Running push_and_run.py to push and run the command on machines")
-    if not push_and_run():
+    logging.info("Step 4: Running push_and_run.py's push_file() to push the files onto all machines")
+    if not push_files():
+        logging.error(f"Step 4 failed")
+        sys.exit(1)
+    
+    logging.info("Step 5: Running push_and_run.py's run_checkforxcode_cli() to run the command on machines")
+    if not run_checkforxcode_cli():
         logging.error(f"Step 4 failed")
         sys.exit(1)
 
-    # Step 5: Run ansible-playbook -i inventory.ini setup.yml -Kk
-    logging.info("Step 5: Running Ansible playbook 'setup.yml'")
+    # # Step 5: Run ansible-playbook -i inventory.ini setup.yml -Kk
+    logging.info("Step 6: Running Ansible playbook 'setup.yml'")
     run_ansible_playbook('setup.yml')
     
     # Step 7: Get admin privs on all remote machines
     logging.info("Gaining admin privs on all remote machines")
-    if not become_admin():
+    if not run_makemeadmin():
         logging.error(f"Step 7 failed")
-        sys.exit(1)        
+        sys.exit(1)
 
-    # Step 7: Run ansible-playbook -i inventory.ini install-softwares.yml -k
-    logging.info("Step 6: Running Ansible playbook 'install-softwares.yml'")
+    # # Step 7: Run ansible-playbook -i inventory.ini install-softwares.yml -k
+    logging.info("Step 8: Running Ansible playbook 'install-softwares.yml'")
     run_ansible_playbook('install-softwares.yml')
     
     logging.info("\n--- Pipeline Completed Successfully ---")

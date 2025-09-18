@@ -8,7 +8,7 @@
         "machineName": "widow-tll"
     },
     {
-        "ip": "129.49.97.221",
+        "ip": "129.49.17.179",
         "machineName": "riley-tll"
     },
     {
@@ -40,5 +40,13 @@
         "ip": "129.49.17.189",
         "machineName": "dum-tll",
         "targetMachineName": "dum-tll"
+    },
+    {
+        "ip": "129.49.17.191",
+        "machineName": "phong-tll"
+    },
+    {
+        "ip": "129.49.17.155",
+        "machineName": "moe-tll"
     }
 ]

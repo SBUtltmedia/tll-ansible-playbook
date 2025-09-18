@@ -24,7 +24,7 @@ def run_command_over_ssh(hostname, username, key_file, command):
             hostname=hostname,
             username=username,
             key_filename=key_file,
-            timeout=10
+            timeout=15
         )
         logging.info(f"Successfully connected to {hostname}.")
 
@@ -79,3 +79,5 @@ def run_command_on_all_machines(username, key_file, command):
         except Exception as e:
             print(f"Error running command on host: {ip} - {e}")
             res[ip] = {"stdout": "", "error": e}
+    
+    return res

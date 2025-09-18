@@ -15,5 +15,5 @@ def generate_hosts_file():
         host = machine["machineName"] 
         hosts+=f'{machine["ip"]}\t{host}\n'
 
-    with open("scripts/hosts", "a+") as f:
+    with open("scripts/hosts", "w") as f:
         f.write(hosts)
