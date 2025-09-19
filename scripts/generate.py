@@ -2,9 +2,9 @@ import json
 
 def generate_hosts_file():
     hosts = """
-    127.0.0.1	localhost
-    255.255.255.255	broadcasthost
-    ::1             localhost
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost
     """
 
     with open('scripts/machines.json') as json_data:

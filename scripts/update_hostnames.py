@@ -2,15 +2,20 @@ from util import run_command_on_all_machines
 import json
 import logging
 import configparser
+import os
+import subprocess
+import sys
 
 INI_FILE_PATH = "inventory.ini"
+
+key_file = os.getenv("KEY_PATH")
 
 def update_hostnames():
     with open("scripts/machines.json") as data:
         d = json.load(data)
         data.close()
         
-    res = run_command_on_all_machines("tltmedia", "/Users/tltmedia/.ssh/id_rsa.pub", "hostname")
+    res = run_command_on_all_machines("tltmedia", key_file, "hostname")
     print("RES: ", res)
     for ip in res:
         try:
@@ -25,7 +30,33 @@ def update_hostnames():
             logging.error(f"Error - Key not found in update_hostnames()")
             return False
     
-    return True
+    logging.info("Updating hostfile")
+
+    process = subprocess.Popen(
+        ["sh", "scripts/commands/sshkey.command"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1  # Important for real-time line-by-line output
+    )
+
+    # Stream stdout in real-time
+    for line in iter(process.stdout.readline, ''):
+        logging.info(f"[STDOUT] {line.strip()}")
+    
+    # Stream stderr in real-time
+    for line in iter(process.stderr.readline, ''):
+        logging.error(f"[STDERR] {line.strip()}")
+        
+    # Wait for the process to complete and get the return code
+    return_code = process.wait()
+
+    if return_code == 0:
+        logging.info(f"Successfully ran sshkey.command with exit code {return_code}.")
+        return True
+    else:
+        logging.error(f"An error occurred while running sshkey.command. Exited with code {return_code}.")
+        return False   
 
 def update_inventory_ini():
     try:
@@ -56,6 +87,6 @@ def update_inventory_ini():
 
 def become_admin():
     try:
-        run_command_on_all_machines("tltmedia", "/Users/tltmedia/.ssh/id_rsa.pub", "./Users/Shared/makeadmin.command")
+        run_command_on_all_machines("tltmedia", key_file, "./Users/Shared/makeadmin.command")
     except Exception as e:
         logging.error(f"Error becoming admin: {e}")

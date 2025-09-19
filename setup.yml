@@ -41,7 +41,7 @@
   
     - name: Copy brew install script
       ansible.builtin.copy:
-        src: scripts/install_brew.sh
+        src: scripts/commands/install_brew.sh
         dest: /Users/Shared/install_brew.sh
         mode: '0777'
 

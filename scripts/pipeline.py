@@ -9,11 +9,15 @@
 7. Run ansible-playbook -i inventory.ini install-softwares.yml -k
 """
 
+from dotenv import load_dotenv
+
 import subprocess
 import os
 import sys
 import logging
 
+
+load_dotenv()
 # Assume other scripts are in a 'scripts' directory relative to this file
 # This is a good practice for organizing your project
 # We will use this path to import our modules
@@ -30,6 +34,9 @@ stream_handler.setLevel(logging.INFO)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+file_handler.setFormatter(formatter)
+stream_handler.setFormatter(formatter)
+
 root_logger.addHandler(file_handler)
 root_logger.addHandler(stream_handler)
 
@@ -45,7 +52,7 @@ except ImportError as e:
 
 def run_ansible_playbook(playbook_name, inventory_file='inventory.ini'):
     """
-    Executes an Ansible playbook using the subprocess module.
+    Executes an Ansible playbook and streams the output in real-time.
 
     Args:
         playbook_name (str): The name of the playbook file (e.g., 'setup.yml').
@@ -60,22 +67,35 @@ def run_ansible_playbook(playbook_name, inventory_file='inventory.ini'):
     ]
     
     print(f"Executing Ansible command: {' '.join(ansible_command)}")
-    
+
     try:
-        # Use subprocess.run to execute the command and wait for it to finish
-        result = subprocess.run(ansible_command, check=True, capture_output=True, text=True)
-        logging.info("Standard Output:")
-        logging.info(result.stdout)
-        logging.info("Standard Error:")
-        logging.info(result.stderr)
-        logging.info(f"Successfully ran '{playbook_name}'")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"An error occurred while running playbook '{playbook_name}':")
-        logging.error("Standard Output:")
-        logging.error(e.stdout)
-        logging.error("Standard Error:")
-        logging.error(e.stderr)
-        sys.exit(1)
+        # Use subprocess.Popen to execute the command and get a process object.
+        # stdout and stderr are set to subprocess.PIPE to capture the output.
+        process = subprocess.Popen(
+            ansible_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1  # Important for real-time line-by-line output
+        )
+
+        # Stream stdout in real-time
+        for line in iter(process.stdout.readline, ''):
+            logging.info(f"[STDOUT] {line.strip()}")
+        
+        # Stream stderr in real-time
+        for line in iter(process.stderr.readline, ''):
+            logging.error(f"[STDERR] {line.strip()}")
+            
+        # Wait for the process to complete and get the return code
+        return_code = process.wait()
+
+        if return_code == 0:
+            logging.info(f"Successfully ran '{playbook_name}' with exit code {return_code}.")
+        else:
+            logging.error(f"An error occurred while running playbook '{playbook_name}'. Exited with code {return_code}.")
+            sys.exit(1)
+
     except FileNotFoundError:
         logging.error("Error: 'ansible-playbook' command not found. Please ensure Ansible is installed and in your PATH.")
         sys.exit(1)
@@ -116,22 +136,23 @@ def main_pipeline():
         logging.error(f"Step 4 failed")
         sys.exit(1)
     
+    # Step 5: run checkForXcodeCLI on all machines
     logging.info("Step 5: Running push_and_run.py's run_checkforxcode_cli() to run the command on machines")
     if not run_checkforxcode_cli():
-        logging.error(f"Step 4 failed")
+        logging.error(f"Step 5 failed")
         sys.exit(1)
 
-    # # Step 5: Run ansible-playbook -i inventory.ini setup.yml -Kk
-    logging.info("Step 6: Running Ansible playbook 'setup.yml'")
-    run_ansible_playbook('setup.yml')
-    
-    # Step 7: Get admin privs on all remote machines
-    logging.info("Gaining admin privs on all remote machines")
+    # Step 6: Get admin privs on all remote machines
+    logging.info("Step 6: Gaining admin privs on all remote machines")
     if not run_makemeadmin():
-        logging.error(f"Step 7 failed")
+        logging.error(f"Step 6 failed")
         sys.exit(1)
 
-    # # Step 7: Run ansible-playbook -i inventory.ini install-softwares.yml -k
+    # Step 7: Run ansible-playbook -i inventory.ini setup.yml -Kk
+    logging.info("Step 7: Running Ansible playbook 'setup.yml'")
+    run_ansible_playbook('setup.yml')
+
+    # Step 8: Run ansible-playbook -i inventory.ini install-softwares.yml -k
     logging.info("Step 8: Running Ansible playbook 'install-softwares.yml'")
     run_ansible_playbook('install-softwares.yml')
     

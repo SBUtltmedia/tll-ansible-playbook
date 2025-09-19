@@ -1,10 +1,10 @@
 
-    127.0.0.1	localhost
-    255.255.255.255	broadcasthost
-    ::1             localhost
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost
     129.49.17.183	frankie-tll
 129.49.17.173	widow-tll
-129.49.97.221	riley-tll
+129.49.17.179	riley-tll
 129.49.17.178	huey-tll
 129.49.17.187	wilt-tll
 129.49.17.180	ollama-tll
