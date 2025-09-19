@@ -155,6 +155,10 @@ def main_pipeline():
     # Step 8: Run ansible-playbook -i inventory.ini install-softwares.yml -k
     logging.info("Step 8: Running Ansible playbook 'install-softwares.yml'")
     run_ansible_playbook('install-softwares.yml')
+
+    # Step 9: Setup Ollama
+    logging.info("Step 9: Running Ansible playbook 'roles/ollama-gateway/tasks/main.yml' to setup Ollama in ollama-tll")
+    run_ansible_playbook('roles/ollama-gateway/tasks/main.yml')
     
     logging.info("\n--- Pipeline Completed Successfully ---")
 

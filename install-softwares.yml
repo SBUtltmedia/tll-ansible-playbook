@@ -59,19 +59,6 @@
   hosts: ollama-hosts
   become: false
 
-  pre_tasks:
-    - name: Ensuring Homebrew Is Installed
-      stat:
-        path: /usr/local/bin/brew
-      register: homebrew_check
-
-    - name: Fail If Homebrew Is Not Installed and install_homebrew_if_missing Is False
-      fail:
-        msg: Homebrew is missing...Install from http://brew.sh/
-      when:
-        - not homebrew_check.stat.exists
-        - not install_homebrew_if_missing
-  
   tasks:
     - name: "Install Ollama via Homebrew"
       ansible.builtin.shell: |
