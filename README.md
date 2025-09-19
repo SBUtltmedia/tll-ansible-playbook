@@ -1,3 +1,8 @@
+## Run setup pipeline
+1. Make a `.env` file in `scripts/` and copy over the contents from `scripts/.env-template` and insert the missing fields.
+2. Run `python scripts/pipeline.py`
+3. Monitor logs in `app.log`.
+
 ## How to setup new computer
 1. Prepare the host file:
     Delete the existing scripts/hosts file. Run python3 scripts/generate.py to generate new hosts file
