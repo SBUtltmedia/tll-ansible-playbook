@@ -1,8 +1,11 @@
 ---
 # roles/ollama_gateway/tasks/ensure_services.yml
-- name: Configure local Ollama to listen on its custom port
-  ansible.builtin.command: launchctl setenv OLLAMA_HOST "127.0.0.1:{{ local_ollama_port }}"
-  changed_when: false # This command doesn't report change status
+- name: Set OLLAMA_HOST environment variable in .zshrc (or .bashrc)
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc" # Adjust path based on user and shell
+    line: 'export OLLAMA_HOST="127.0.0.1:{{ local_ollama_port }}"'
+    create: true
+  become: yes
 
 - name: Check if Ollama application is running
   ansible.builtin.command: pgrep -f "/Applications/Ollama.app"
@@ -14,8 +17,8 @@
   ansible.builtin.command: open -a Ollama
   when: ollama_process.rc != 0
 
-- name: Ensure Nginx service is started and enabled on boot
+- name: Ensure Nginx is present
   community.general.homebrew:
     name: nginx
-    state: started
-    service_enabled: true
+    state: present
+  become: false

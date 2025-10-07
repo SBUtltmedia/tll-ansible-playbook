@@ -14,8 +14,10 @@
   community.general.homebrew:
     name: nginx
     state: present
+  become: false
 
 - name: Install Ollama.app using Homebrew Cask
   community.general.homebrew_cask:
     name: ollama
     state: present
+  become: false

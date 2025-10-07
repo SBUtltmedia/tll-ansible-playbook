@@ -60,6 +60,7 @@ def run_ansible_playbook(playbook_name, inventory_file='inventory.ini'):
     """
     ansible_command = [
         'ansible-playbook',
+        '-vvv',
         '-i', inventory_file,
         playbook_name,
         '-K', # Ask for sudo password

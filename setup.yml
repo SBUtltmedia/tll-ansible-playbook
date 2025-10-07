@@ -63,7 +63,24 @@
         src: scripts/sudoers
         dest: /etc/sudoers
 
-    - name: "install brew"
-      shell: NONINTERACTIVE=1 /bin/bash /Users/Shared/install_brew.sh
+    - name: Install Homebrew
+      shell: |
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: "{{ (ansible_machine == 'arm64') | ternary('/opt/homebrew/bin/brew', '/usr/local/bin/brew') }}"
+      become: false
+  
+    - name: Add Homebrew to PATH for current user
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'eval "$({{ (ansible_machine == "arm64") | ternary("/opt/homebrew", "/usr/local") }}/bin/brew shellenv)"'
+        create: true
+        state: present
       become: false
 
+    - name: Verify brew installation
+      command: "{{ brew_prefix }}/bin/brew --version"
+      register: brew_version
+      changed_when: false
+    - debug:
+        msg: "Installed Homebrew version: {{ brew_version.stdout }}"

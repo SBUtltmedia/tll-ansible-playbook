@@ -48,7 +48,7 @@ def update_hostnames():
     for line in iter(process.stderr.readline, ''):
         logging.error(f"[STDERR] {line.strip()}")
         
-    # Wait for the process to complete and get the return code
+    # Wait for the process to complete and get the return c
     return_code = process.wait()
 
     if return_code == 0:

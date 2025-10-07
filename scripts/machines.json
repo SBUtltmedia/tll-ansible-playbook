@@ -40,5 +40,9 @@
         "ip": "129.49.17.189",
         "machineName": "dum-tll",
         "targetMachineName": "dum-tll"
+    },
+    {
+        "ip": "129.49.17.184",
+        "machineName": "beaker-tll"
     }
 ]

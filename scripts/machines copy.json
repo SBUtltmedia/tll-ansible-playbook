@@ -42,11 +42,12 @@
         "targetMachineName": "dum-tll"
     },
     {
-        "ip": "129.49.17.191",
-        "machineName": "phong-tll"
+        "ip": "129.49.17.184",
+        "machineName": "beaker-tll"
     },
     {
-        "ip": "129.49.17.155",
-        "machineName": "moe-tll"
+        "ip": "129.49.17.190",
+        "machineName": "router",
+        "router": true
     }
 ]

@@ -1,0 +1,8 @@
+---
+- name: Deploy Ollama Gateway Role to dedicated hosts
+  hosts: ollama-hosts
+  gather_facts: yes
+  become: yes
+
+  roles:
+    - ollama-gateway

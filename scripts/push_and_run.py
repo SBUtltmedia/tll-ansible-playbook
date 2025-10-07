@@ -29,8 +29,9 @@ def push_files():
             if not TURNOFFSFTP:
                 host = machine['machineName']
                 ip = machine['ip']
+                logging.info(f"Moving files to {host} : {ip}")
                 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh_client.connect(hostname=ip,port=port, key_filename=key_file, timeout=15)
+                ssh_client.connect(hostname=ip,port=port, key_filename=key_file, timeout=20)
                 ftp = ssh_client.open_sftp()
                 ftp.put("scripts/commands/checkForXcodeCLINew.command","/Users/Shared/checkForXcodeCLI.command")
                 ftp.put("scripts/commands/makemeadmin.command","/Users/Shared/makemeadmin.command")

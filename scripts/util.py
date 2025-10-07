@@ -24,7 +24,7 @@ def run_command_over_ssh(hostname, username, key_file, command):
             hostname=hostname,
             username=username,
             key_filename=key_file,
-            timeout=15
+            timeout=30
         )
         logging.info(f"Successfully connected to {hostname}.")
 
