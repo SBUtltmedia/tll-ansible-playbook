@@ -1,0 +1,7 @@
+# A list of users and their public keys to be added to macOS devices
+users_to_create:
+  - name: alice
+    key: "<input key here>"
+  - name: bob
+    key: "<input key here>"
+

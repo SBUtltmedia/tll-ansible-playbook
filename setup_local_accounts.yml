@@ -1,0 +1,29 @@
+---
+- name: Create local user accounts on macOS devices
+  hosts: macs
+  become: yes # This is required to create users and manage system files
+
+  vars_files:
+    - users.yml # Loads the variables from the users.yml file
+
+  tasks:
+    - name: Ensure local user accounts exist
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        state: present
+        shell: /bin/zsh  # macOS default shell
+        groups: staff
+        create_home: yes
+      loop: "{{ users_to_create }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Set up authorized_keys for each user
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.key }}"
+        state: present
+        manage_dir: yes # This will create the .ssh directory with correct permissions
+      loop: "{{ users_to_create }}"
+      loop_control:
+        label: "{{ item.name }}"

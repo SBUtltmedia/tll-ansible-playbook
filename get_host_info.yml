@@ -1,0 +1,20 @@
+---
+- name: Gather and Display Host Information
+  hosts: all
+  gather_facts: yes # This is the key step that collects system data
+
+  tasks:
+    - name: Display key system information for each host
+      ansible.builtin.debug:
+        msg: |
+          
+          ========================================
+          Host Information for: {{ inventory_hostname }}
+          ========================================
+          Model:           {{ ansible_facts['product_name'] }}
+          Serial Number:   {{ ansible_facts['product_serial'] }}
+          Operating System:  {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+          Processor:       {{ ansible_facts['processor'] }}
+          CPU Cores:       {{ ansible_facts['processor_cores'] }}
+          Total Memory:      {{ ansible_facts['memtotal_mb'] }} MB
+          ========================================
